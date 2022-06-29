@@ -17,11 +17,17 @@ class FeatureExtractor:
 class FeatureVector:
     
     @staticmethod
-    def getFeatureVector(usl,features):
-        fv=[]
-        for feature in usl:
-            if feature not in features:
-                fv.append(0)
-            else:
-                fv.append(1)
-        return fv
+    def getFeatureVector(usl,recipes):
+        listFV=[]
+
+        for recipe in recipes:
+            fv=[]
+            target,ingredients=recipe
+            for feature in usl:
+                if feature not in ingredients:
+                    fv.append(0)
+                else:
+                    fv.append(1)
+            listFV.append((target, fv))
+
+        return listFV

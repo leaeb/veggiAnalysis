@@ -1,47 +1,17 @@
-import json
-f=open('vegan/Vegan.json')
-data = json.load(f)
-#print(data)
+from featureVector import FeatureExtractor,FeatureVector
+import numpy as np
 
-x=0
-list=[]
-for recipe in data:
-    try:
-        if(recipe["ingredients"]):
-            for ingredient in recipe["ingredients"]:
-                list.append(ingredient["name"])
-    except KeyError:
-        print(recipe)
+featuresVegan = open("vegan/veganFeatures.txt", "r")
+linesVegan = featuresVegan.read().split(',\n')
 
+featuresGefl = open("fleisch/gefluegelFeatures.txt", "r")
+linesGefl = featuresGefl.read().split(',\n')
+print(len(linesVegan))
+print(len(linesGefl))
+print(len(linesVegan+linesGefl))
 
-cleared_list=[]
-s=''
-for item in list:
-    #print(item)
-    s=str(str(item).split(',')[0])
-    s=str(s.split(' ')[0])
-    s=str(s.split('(')[0])   
-    s=str(s.split('z.B.')[0])
-    s=str(s.split('oder')[0])
-    s=str(s.split('für')[0])
-    s=str(s.split('fuer')[0])
-    s=str(s.split('evtl.')[0])
-    s=str(s.split('ca.')[0])
-    s=str(s.split(' g ')[0])
-    s=str(s.split(' kg ')[0])
-    s=str(s.split('EL')[0])
-    s=s.strip()
-    s=s.upper()
-    cleared_list.append(s)
+sl=FeatureExtractor.getUniqueFeatures(linesVegan + linesGefl)
+print(len(sl))
+usl=list(filter(None, sl)) 
 
-with open(r'vegan/veganFeatures.txt', 'w') as fp:
-    for item in cleared_list:
-        # write each item on a new line
-        fp.write("%s,\n" % item)
-    print('Done')
-
-
-
-
-
-        
+print(usl)

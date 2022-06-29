@@ -7,7 +7,8 @@ from chefkoch import ChefKochAPI,DataParser
 categories = ChefKochAPI.get_categories()
 x=0
 for category in categories:
-    if(category.title=='Vegan'):
+    #print(category.title)
+    if(category.title=='Geflügel'):
         y=x
     x=x+1
 recipes = ChefKochAPI.parse_recipes(categories[y])
