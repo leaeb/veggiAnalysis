@@ -70,7 +70,8 @@ fvG=FeatureVector.getFeatureVector(usl=usl,recipes=allRecipesG)
 print(len(allRecipesG))
 print(len(allRecipesV))
 fvs=fvV+fvG
-
+import random
+random.shuffle(fvs)
 import csv
 
 with open('data.csv','w') as out:

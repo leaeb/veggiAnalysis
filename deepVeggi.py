@@ -13,15 +13,32 @@ import tensorflow.keras.regularizers as tfr
 ###--------
 # load data
 ###--------
+from csv import reader
+# open file in read mode
+target=[]
+input=[]
+with open('data.csv', 'r') as read_obj:
+    # pass the file object to reader() to get the reader object
+    csv_reader = reader(read_obj)
+    # Iterate over each row in the csv using reader object
+    for row in csv_reader:
+        # row variable is a list that represents a row in csv
+        t,i=row
+        target.append(bool(t))
+        i=i.strip('][').split(', ')
+        input.append(list(map(int, i)))
 
-#training_input= 
-#training_target=
-#test_input=
-#test_target=
-## Reserve samples for validation
-#validation_input = 
-#validation_target = 
 
+test_input=np.array(input[:5000])
+#test_input=test_input.reshape(test_input.shape[0],len(test_input[0]))
+print(test_input.shape)
+test_target=np.array(target[:5000])
+# Reserve samples for validation
+validation_input = np.array(input[5001:10000])
+validation_target = np.array(target[5001:10000])
+training_input= np.array(input[10000:])
+
+training_target=np.array(target[10000:])
 
 print("training input shape: %s, training target shape: %s"  % (training_input.shape, training_target.shape))
 print("validation input shape: %s, validation target shape: %s"  % (validation_input.shape, validation_target.shape))
@@ -36,13 +53,15 @@ print("\n")
 # Note: shuffling 
 
 
-num_classes = 3 # 10 digits
+num_classes = 2 # 10 digits
 
 ###-----------
 # define model
 ###-----------
-
-num_inputs = training_input.shape[1] 
+print('-----------------------------------------')
+print(len(training_input[1]))
+print(training_input.shape)
+num_inputs = len(training_input[0])
 num_hidden = [50,50] # FIX!!!
 num_outputs = num_classes 
 
@@ -63,7 +82,7 @@ bias_init = tfi.Zeros() # FIX!!! default: Zeros(); for some possible values see 
 regularization_weight = 0.0 # 0 for no regularization or e.g. 0.01 to apply regularization
 regularizer = tfr.l1(l=regularization_weight) # or l2 or l1_l2; used for both weights and biases
 
-num_epochs = 40 # FIX !!!
+num_epochs = 3 # FIX !!!
 batch_size = 10 # FIX !!! 
 
 # Sequential network structure.
@@ -157,18 +176,18 @@ plt.show()
 # the first entry of which contains the weights of all inputs connecting
 # to the first hidden neuron; those weights will be displayed in (28 x 28) format
 # until all plots (4 x 4, i.e. 16) are "filled" or no more hidden neurons are left
-print("Visualization of the weights between input and some of the hidden neurons of the first hidden layer:")
-fig, axes = plt.subplots(4, 4, figsize=(15,15))
-# use global min / max to ensure all weights are shown on the same scale
-weights = model.layers[0].get_weights()[0]
-vmin, vmax = weights.min(), weights.max()
-for coef, ax in zip(weights.T, axes.ravel()):
-    ax.matshow(coef.reshape(28, 28), cmap=plt.cm.gray, vmin=.5 * vmin,
-               vmax=.5 * vmax)
-    ax.set_xticks(())
-    ax.set_yticks(())
+# print("Visualization of the weights between input and some of the hidden neurons of the first hidden layer:")
+# fig, axes = plt.subplots(4, 4, figsize=(15,15))
+# # use global min / max to ensure all weights are shown on the same scale
+# weights = model.layers[0].get_weights()[0]
+# vmin, vmax = weights.min(), weights.max()
+# for coef, ax in zip(weights.T, axes.ravel()):
+#     ax.matshow(coef.reshape(28, 28), cmap=plt.cm.gray, vmin=.5 * vmin,
+#                vmax=.5 * vmax)
+#     ax.set_xticks(())
+#     ax.set_yticks(())
 
-plt.show()
+# plt.show()
 
 # Training
 history = model.fit(training_input, training_target, epochs=num_epochs, batch_size=batch_size, shuffle="True", verbose=2)
